@@ -12,7 +12,57 @@ export const gendiff = () => {
     .option("-V, --version", "output the version number")
     .option("-f, --format [type]", "output format")
     .action(() => {
-      console.log(parser(program.args[0]));
+      const [filepath1, filepath2] = program.args;
+
+      const json1 = parser(filepath1);
+      const json2 = parser(filepath2);
+
+      const json1Keys = Object.keys(json1);
+      const json1Entries = Object.entries(json1);
+      const json2Keys = Object.keys(json2);
+
+      const json2NewKeys = json2Keys.filter((key) => !json1Keys.includes(key));
+
+      const json2NewKeysData = json2NewKeys.reduce((acc, key) => {
+        return [...acc, { key, value: json2[key], sign: "+" }];
+      }, []);
+
+      const data = json1Entries.reduce((acc, entry) => {
+        const [key, value] = entry;
+
+        let sign;
+
+        const isKeyInJson2 = json2Keys.includes(key);
+        const isSameValues = json2[key] === value;
+
+        if (!isKeyInJson2) {
+          return [...acc, { sign: "-", key, value }];
+        }
+
+        if (isKeyInJson2 && isSameValues) {
+          sign = "";
+
+          return [...acc, { sign, key, value }];
+        }
+
+        if (isKeyInJson2 && !isSameValues) {
+          sign = "-";
+
+          return [
+            ...acc,
+            { sign, key, value },
+            { sign: "+", key, value: json2[key] },
+          ];
+        }
+      }, json2NewKeysData);
+
+      const sortedData = [...data].sort((a, b) => a.key.localeCompare(b.key));
+
+      const result = sortedData.reduce((acc, item) => {
+        return acc + `\n  ${item.sign || " "} ${item.key}: ${item.value}`;
+      }, "");
+
+      console.log(`{${result}\n}`);
     });
 
   program.parse();
