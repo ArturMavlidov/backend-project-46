@@ -2,6 +2,62 @@ import { Command } from 'commander';
 
 import { parser } from './parser.js';
 
+export const compareFiles = (filepath1, filepath2) => {
+  const json1 = parser(filepath1);
+  const json2 = parser(filepath2);
+
+  const json1Keys = Object.keys(json1);
+  const json1Entries = Object.entries(json1);
+  const json2Keys = Object.keys(json2);
+
+  const json2NewKeys = json2Keys.filter((key) => !json1Keys.includes(key));
+
+  const json2NewKeysData = json2NewKeys.reduce(
+    (acc, key) => [...acc, { key, value: json2[key], sign: '+' }],
+    [],
+  );
+
+  const data = json1Entries.reduce((acc, entry) => {
+    const [key, value] = entry;
+
+    let sign;
+
+    const isKeyInJson2 = json2Keys.includes(key);
+    const isSameValues = json2[key] === value;
+
+    if (!isKeyInJson2) {
+      return [...acc, { sign: '-', key, value }];
+    }
+
+    if (isKeyInJson2 && isSameValues) {
+      sign = '';
+
+      return [...acc, { sign, key, value }];
+    }
+
+    if (isKeyInJson2 && !isSameValues) {
+      sign = '-';
+
+      return [
+        ...acc,
+        { sign, key, value },
+        { sign: '+', key, value: json2[key] },
+      ];
+    }
+
+    return acc;
+  }, json2NewKeysData);
+
+  const sortedData = [...data].sort((a, b) => a.key.localeCompare(b.key));
+
+  const result = sortedData.reduce(
+    (acc, item) => `${acc}\n  ${item.sign || ' '} ${item.key}: ${item.value}`,
+    '',
+  );
+
+  return `{${result}\n}`;
+};
+
 export const gendiff = () => {
   const program = new Command();
 
@@ -14,53 +70,7 @@ export const gendiff = () => {
     .action(() => {
       const [filepath1, filepath2] = program.args;
 
-      const json1 = parser(filepath1);
-      const json2 = parser(filepath2);
-
-      const json1Keys = Object.keys(json1);
-      const json1Entries = Object.entries(json1);
-      const json2Keys = Object.keys(json2);
-
-      const json2NewKeys = json2Keys.filter((key) => !json1Keys.includes(key));
-
-      const json2NewKeysData = json2NewKeys.reduce((acc, key) => [...acc, { key, value: json2[key], sign: '+' }], []);
-
-      const data = json1Entries.reduce((acc, entry) => {
-        const [key, value] = entry;
-
-        let sign;
-
-        const isKeyInJson2 = json2Keys.includes(key);
-        const isSameValues = json2[key] === value;
-
-        if (!isKeyInJson2) {
-          return [...acc, { sign: '-', key, value }];
-        }
-
-        if (isKeyInJson2 && isSameValues) {
-          sign = '';
-
-          return [...acc, { sign, key, value }];
-        }
-
-        if (isKeyInJson2 && !isSameValues) {
-          sign = '-';
-
-          return [
-            ...acc,
-            { sign, key, value },
-            { sign: '+', key, value: json2[key] },
-          ];
-        }
-
-        return acc;
-      }, json2NewKeysData);
-
-      const sortedData = [...data].sort((a, b) => a.key.localeCompare(b.key));
-
-      const result = sortedData.reduce((acc, item) => `${acc}\n  ${item.sign || ' '} ${item.key}: ${item.value}`, '');
-
-      console.log(`{${result}\n}`);
+      console.log(compareFiles(filepath1, filepath2));
     });
 
   program.parse();
