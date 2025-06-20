@@ -12,3 +12,8 @@ lint:
 
 test:
 	NODE_OPTIONS=--experimental-vm-modules npx jest
+
+.PHONY: test-coverage
+
+test-coverage:
+	NODE_OPTIONS=--experimental-vm-modules npx jest --coverage
