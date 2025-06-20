@@ -1,16 +1,16 @@
-import { Command } from "commander";
+import { Command } from 'commander';
 
-import { parser } from "./parser.js";
+import { parser } from './parser.js';
 
 export const gendiff = () => {
   const program = new Command();
 
   program
-    .name("gendiff")
-    .description("Compares two configuration files and shows a difference.")
-    .arguments("filepath1 filepath2")
-    .option("-V, --version", "output the version number")
-    .option("-f, --format [type]", "output format")
+    .name('gendiff')
+    .description('Compares two configuration files and shows a difference.')
+    .arguments('filepath1 filepath2')
+    .option('-V, --version', 'output the version number')
+    .option('-f, --format [type]', 'output format')
     .action(() => {
       const [filepath1, filepath2] = program.args;
 
@@ -23,9 +23,7 @@ export const gendiff = () => {
 
       const json2NewKeys = json2Keys.filter((key) => !json1Keys.includes(key));
 
-      const json2NewKeysData = json2NewKeys.reduce((acc, key) => {
-        return [...acc, { key, value: json2[key], sign: "+" }];
-      }, []);
+      const json2NewKeysData = json2NewKeys.reduce((acc, key) => [...acc, { key, value: json2[key], sign: '+' }], []);
 
       const data = json1Entries.reduce((acc, entry) => {
         const [key, value] = entry;
@@ -36,34 +34,36 @@ export const gendiff = () => {
         const isSameValues = json2[key] === value;
 
         if (!isKeyInJson2) {
-          return [...acc, { sign: "-", key, value }];
+          return [...acc, { sign: '-', key, value }];
         }
 
         if (isKeyInJson2 && isSameValues) {
-          sign = "";
+          sign = '';
 
           return [...acc, { sign, key, value }];
         }
 
         if (isKeyInJson2 && !isSameValues) {
-          sign = "-";
+          sign = '-';
 
           return [
             ...acc,
             { sign, key, value },
-            { sign: "+", key, value: json2[key] },
+            { sign: '+', key, value: json2[key] },
           ];
         }
+
+        return acc;
       }, json2NewKeysData);
 
       const sortedData = [...data].sort((a, b) => a.key.localeCompare(b.key));
 
-      const result = sortedData.reduce((acc, item) => {
-        return acc + `\n  ${item.sign || " "} ${item.key}: ${item.value}`;
-      }, "");
+      const result = sortedData.reduce((acc, item) => `${acc}\n  ${item.sign || ' '} ${item.key}: ${item.value}`, '');
 
       console.log(`{${result}\n}`);
     });
 
   program.parse();
 };
+
+export default gendiff;
