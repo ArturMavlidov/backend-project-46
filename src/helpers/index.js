@@ -1,1 +1,3 @@
-export * from './getFixturePath';
+export * from "./getFixturePath.js";
+export * from "./stringify.js";
+export * from "./isObject.js";
