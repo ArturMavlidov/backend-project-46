@@ -1,11 +1,11 @@
 export const stringify = ({
   value,
-  replacer = " ",
+  replacer = ' ',
   spacesCount = 2,
-  depth = 1,
+  depth: initialDepth = 1,
 }) => {
   const iter = (currentValue, depth) => {
-    if (typeof currentValue !== "object" || currentValue === null) {
+    if (typeof currentValue !== 'object' || currentValue === null) {
       return `${currentValue}`;
     }
 
@@ -13,13 +13,13 @@ export const stringify = ({
     const currentIndent = replacer.repeat(indentSize);
     const bracketIndent = replacer.repeat(indentSize - spacesCount);
     const lines = Object.entries(currentValue).map(
-      ([key, val]) => `${currentIndent}${key}: ${iter(val, depth + 1)}`
+      ([key, val]) => `${currentIndent}${key}: ${iter(val, depth + 1)}`,
     );
 
-    return ["{", ...lines, `${bracketIndent}}`].join("\n");
+    return ['{', ...lines, `${bracketIndent}}`].join('\n');
   };
 
-  return iter(value, depth);
+  return iter(value, initialDepth);
 };
 
 export default stringify;

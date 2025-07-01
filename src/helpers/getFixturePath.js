@@ -1,4 +1,5 @@
 import path from 'path';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 
 export const getFixturePath = (filename) => path.join(
@@ -7,5 +8,13 @@ export const getFixturePath = (filename) => path.join(
   '__fixtures__',
   filename,
 );
+
+export const getFixtureContent = (filename) => {
+  const file = getFixturePath(filename);
+
+  return readFileSync(file, {
+    encoding: 'utf-8',
+  });
+};
 
 export default getFixturePath;
