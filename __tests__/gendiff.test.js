@@ -38,12 +38,21 @@ describe('gendiff', () => {
     expect(compareFiles(file1, file2)).toBe(result);
   });
 
-  test('plain gendiff nested json files', () => {
+  test('plain format gendiff nested json files', () => {
     const result = getFixtureContent('file3_file4_plain_result.txt');
 
     const file1 = getFixturePath('file3.json');
     const file2 = getFixturePath('file4.json');
 
     expect(compareFiles(file1, file2, 'plain')).toBe(result);
+  });
+
+  test('json format gendiff nested json files', () => {
+    const result = getFixtureContent('file3_file4_json_result.txt');
+
+    const file1 = getFixturePath('file3.json');
+    const file2 = getFixturePath('file4.json');
+
+    expect(compareFiles(file1, file2, 'json')).toBe(result);
   });
 });
