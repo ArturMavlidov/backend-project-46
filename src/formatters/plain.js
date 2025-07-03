@@ -1,11 +1,11 @@
-import { isObject } from "../helpers/index.js";
+import { isObject } from '../helpers/index.js';
 
 const stringifyValue = (value) => {
   if (isObject(value)) {
-    return "[complex value]";
+    return '[complex value]';
   }
 
-  if (typeof value !== "string") {
+  if (typeof value !== 'string') {
     return value;
   }
 
@@ -13,8 +13,8 @@ const stringifyValue = (value) => {
 };
 
 export const plain = (data) => {
-  const iter = (data) => {
-    return data.reduce((acc, val) => {
+  const iter = (coll) =>
+    coll.reduce((acc, val) => {
       const { operation, value, oldValue, ignoreInPlain } = val;
 
       if (ignoreInPlain) {
@@ -47,7 +47,6 @@ export const plain = (data) => {
 
       return `${acc}\nProperty '${val.property}' was ${result}`;
     }, "");
-  };
 
   return iter(data).trim();
 };
