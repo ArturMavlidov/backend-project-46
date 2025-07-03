@@ -1,4 +1,4 @@
-import { stringify, isObject } from "../helpers/index.js";
+import { stringify, isObject } from '../helpers/index.js';
 
 export const stylish = (data, depth = 1) => {
   const result = data.reduce((acc, val) => {
@@ -16,18 +16,18 @@ export const stylish = (data, depth = 1) => {
       });
     }
 
-    if (currentValue === "") {
-      currentValue = " ";
+    if (currentValue === '') {
+      currentValue = ' ';
     }
 
-    const spaces = " ".repeat(depth * 4 - val.sign.length);
+    const spaces = ' '.repeat(depth * 4 - val.sign.length);
 
     return `${acc}\n${spaces}${val.sign}${val.key}:${
-      val.value === "" ? "" : " "
+      val.value === '' ? '' : ' '
     }${currentValue}`;
-  }, "");
+  }, '');
 
-  return `{${result}\n${" ".repeat((depth - 1) * 4)}}`;
+  return `{${result}\n${' '.repeat((depth - 1) * 4)}}`;
 };
 
 export default stylish;
