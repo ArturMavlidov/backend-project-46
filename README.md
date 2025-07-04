@@ -10,7 +10,7 @@
 
 ## If you want to work with this project, here is the instruction:
 
-Clone this repository
-Go to the console from the project directory
-Enter npm i
-Enter make gendiff
+1. Clone this repository
+2. Go to the console from the project directory
+3. Enter npm i
+4. Enter make gendiff
