@@ -1,18 +1,14 @@
-import { stylish } from './stylish.js';
-import { plain } from './plain.js';
+import { stylish } from "./stylish.js";
+import { plain } from "./plain.js";
 
-export const formatter = ({ data, format = 'stylish' }) => {
-  switch (format) {
-    case 'stylish':
-      return stylish(data);
-    case 'plain':
-      return plain(data);
-    case 'json':
-      return JSON.stringify(data);
-    default:
-      console.error(`Unknown format: ${format}`);
-      return stylish(data);
-  }
+const mapping = {
+  stylish: stylish,
+  plain: plain,
+  json: JSON.stringify,
+};
+
+export const formatter = ({ data, format = "stylish" }) => {
+  return mapping[format](data);
 };
 
 export default formatter;

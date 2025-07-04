@@ -1,11 +1,11 @@
-import { isObject } from '../helpers/index.js';
+import { isObject } from "../helpers/index.js";
 
 const stringifyValue = (value) => {
   if (isObject(value)) {
-    return '[complex value]';
+    return "[complex value]";
   }
 
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return value;
   }
 
@@ -13,42 +13,31 @@ const stringifyValue = (value) => {
 };
 
 export const plain = (data) => {
-  const iter = (coll) => coll.reduce((acc, val) => {
-    const {
-      operation, value, oldValue, ignoreInPlain,
-    } = val;
+  const iter = (coll) =>
+    coll.reduce((acc, val) => {
+      const { operation, value, oldValue, ignoreInPlain } = val;
 
-    if (ignoreInPlain) {
-      return acc;
-    }
+      if (ignoreInPlain) {
+        return acc;
+      }
 
-    if (Array.isArray(value)) {
-      return `${acc}${iter(value)}`;
-    }
+      if (Array.isArray(value)) {
+        return `${acc}${iter(value)}`;
+      }
 
-    const stringifiedValue = stringifyValue(value);
-    const stringifiedOldValue = stringifyValue(oldValue);
+      const stringifiedValue = stringifyValue(value);
+      const stringifiedOldValue = stringifyValue(oldValue);
 
-    let result;
+      const mapping = {
+        removed: "removed",
+        added: `added with value: ${stringifiedValue}`,
+        updated: `updated. From ${stringifiedOldValue} to ${stringifiedValue}`,
+      };
 
-    switch (operation) {
-      case 'removed':
-        result = 'removed';
-        break;
-      case 'added':
-        result = `added with value: ${stringifiedValue}`;
-        break;
-      case 'updated':
-        result = `updated. From ${stringifiedOldValue} to ${stringifiedValue}`;
-        break;
-      default:
-        console.error(`Unknown operation: ${operation}`);
-        break;
-    }
-
-    return `${acc}\nProperty '${val.property}' was ${result}`;
-  }, '');
+      return `${acc}\nProperty '${val.property}' was ${mapping[operation]}`;
+    }, "");
 
   return iter(data).trim();
 };
+
 export default plain;
