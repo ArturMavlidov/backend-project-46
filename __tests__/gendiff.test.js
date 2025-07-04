@@ -53,6 +53,8 @@ describe('gendiff', () => {
     const file1 = getFixturePath('file3.json');
     const file2 = getFixturePath('file4.json');
 
+    console.log(compareFiles(file1, file2, "json"));
+
     expect(compareFiles(file1, file2, 'json')).toBe(result);
   });
 });

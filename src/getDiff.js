@@ -13,8 +13,7 @@ export const getDiff = ({
   const object2NewValuesData = object2Keys
     .filter((key) => !Object.hasOwn(object1, key))
     .map((key) => ({
-      sign: "+ ",
-      operation: "added",
+      status: "added",
       property: propertyTree ? `${propertyTree}.${key}` : key,
       key,
       value: object2[key],
@@ -32,9 +31,9 @@ export const getDiff = ({
       return [
         ...acc,
         {
+          status: "equals",
           key,
           property,
-          sign: "  ",
           value: getDiff({
             object1: value,
             object2: valueInObject2,
@@ -50,11 +49,10 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          sign: "  ",
+          status: "equals",
           property,
           key,
           value,
-          ignoreInPlain: true,
         },
       ];
     }
@@ -63,8 +61,7 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          sign: "- ",
-          operation: "removed",
+          status: "removed",
           property,
           key,
           value,
@@ -76,15 +73,7 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          sign: "- ",
-          property,
-          key,
-          value,
-          ignoreInPlain: true,
-        },
-        {
-          sign: "+ ",
-          operation: "updated",
+          status: "updated",
           oldValue: value,
           value: valueInObject2,
           property,

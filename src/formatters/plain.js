@@ -15,15 +15,13 @@ const stringifyValue = (value) => {
 export const plain = (data) => {
   const iter = (coll) =>
     coll.reduce((acc, val) => {
-      const { operation, value, oldValue, ignoreInPlain } = val;
-
-      if (ignoreInPlain) {
-        return acc;
-      }
+      const { status, value, oldValue } = val;
 
       if (Array.isArray(value)) {
         return `${acc}${iter(value)}`;
       }
+
+      if (status === "equals") return acc;
 
       const stringifiedValue = stringifyValue(value);
       const stringifiedOldValue = stringifyValue(oldValue);
@@ -34,7 +32,7 @@ export const plain = (data) => {
         updated: `updated. From ${stringifiedOldValue} to ${stringifiedValue}`,
       };
 
-      return `${acc}\nProperty '${val.property}' was ${mapping[operation]}`;
+      return `${acc}\nProperty '${val.property}' was ${mapping[status]}`;
     }, "");
 
   return iter(data).trim();

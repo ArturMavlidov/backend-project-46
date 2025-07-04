@@ -24,31 +24,51 @@ const stringify = ({
   return iter(value, initialDepth);
 };
 
+const mapper = {
+  equals: "  ",
+  added: "+ ",
+  updated: "+ ",
+  removed: "- ",
+};
+
+const getStyledValue = (value, depth) => {
+  if (Array.isArray(value)) {
+    return stylish(value, depth + 1);
+  }
+
+  if (isObject(value)) {
+    return stringify({
+      value: value,
+      spacesCount: 4,
+      depth: depth + 1,
+    });
+  }
+
+  if (value === "") {
+    return " ";
+  }
+
+  return value;
+};
+
 export const stylish = (data, depth = 1) => {
   const result = data.reduce((acc, val) => {
-    let currentValue = val.value;
+    const sign = mapper[val.status];
+    const spaces = " ".repeat(depth * 4 - sign.length);
 
-    if (Array.isArray(val.value)) {
-      currentValue = stylish(val.value, depth + 1);
+    const getStyledRow = (value, sign) =>
+      `\n${spaces}${sign}${val.key}:${value === "" ? "" : " "}${getStyledValue(
+        value,
+        depth
+      )}`;
+
+    const styledRow = getStyledRow(val.value, sign);
+
+    if (val.oldValue !== undefined) {
+      return acc + getStyledRow(val.oldValue, mapper["removed"]) + styledRow;
     }
 
-    if (isObject(val.value)) {
-      currentValue = stringify({
-        value: val.value,
-        spacesCount: 4,
-        depth: depth + 1,
-      });
-    }
-
-    if (currentValue === "") {
-      currentValue = " ";
-    }
-
-    const spaces = " ".repeat(depth * 4 - val.sign.length);
-
-    return `${acc}\n${spaces}${val.sign}${val.key}:${
-      val.value === "" ? "" : " "
-    }${currentValue}`;
+    return `${acc}${styledRow}`;
   }, "");
 
   return `{${result}\n${" ".repeat((depth - 1) * 4)}}`;
