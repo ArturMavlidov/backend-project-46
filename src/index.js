@@ -1,3 +1,3 @@
-import { compareFiles } from './gendiff';
+import { compareFiles } from './gendiff'
 
-export default compareFiles;
+export default compareFiles

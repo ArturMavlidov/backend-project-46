@@ -1,2 +1,2 @@
-export * from './getFixturePath.js';
-export * from './isObject.js';
+export * from './getFixturePath.js'
+export * from './isObject.js'
