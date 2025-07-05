@@ -1,4 +1,4 @@
-import jsToYaml from "js-yaml";
+import jsToYaml from 'js-yaml';
 
 const mapping = {
   yml: jsToYaml.load,
@@ -6,8 +6,6 @@ const mapping = {
   json: JSON.parse,
 };
 
-export const parser = (file, extension) => {
-  return mapping[extension.slice(1)](file);
-};
+export const parser = (file, extension) => mapping[extension.slice(1)](file);
 
 export default parser;

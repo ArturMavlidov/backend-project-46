@@ -1,13 +1,13 @@
-import { isObject } from "../helpers/index.js";
+import { isObject } from '../helpers/index.js';
 
 const stringify = ({
   value,
-  replacer = " ",
+  replacer = ' ',
   spacesCount = 2,
   depth: initialDepth = 1,
 }) => {
   const iter = (currentValue, depth) => {
-    if (typeof currentValue !== "object" || currentValue === null) {
+    if (typeof currentValue !== 'object' || currentValue === null) {
       return `${currentValue}`;
     }
 
@@ -15,37 +15,37 @@ const stringify = ({
     const currentIndent = replacer.repeat(indentSize);
     const bracketIndent = replacer.repeat(indentSize - spacesCount);
     const lines = Object.entries(currentValue).map(
-      ([key, val]) => `${currentIndent}${key}: ${iter(val, depth + 1)}`
+      ([key, val]) => `${currentIndent}${key}: ${iter(val, depth + 1)}`,
     );
 
-    return ["{", ...lines, `${bracketIndent}}`].join("\n");
+    return ['{', ...lines, `${bracketIndent}}`].join('\n');
   };
 
   return iter(value, initialDepth);
 };
 
 const mapper = {
-  equals: "  ",
-  added: "+ ",
-  updated: "+ ",
-  removed: "- ",
+  equals: '  ',
+  added: '+ ',
+  updated: '+ ',
+  removed: '- ',
 };
 
-const getStyledValue = (value, depth) => {
+const getStyledValue = (value, depth, cb) => {
   if (Array.isArray(value)) {
-    return stylish(value, depth + 1);
+    return cb(value, depth + 1);
   }
 
   if (isObject(value)) {
     return stringify({
-      value: value,
+      value,
       spacesCount: 4,
       depth: depth + 1,
     });
   }
 
-  if (value === "") {
-    return " ";
+  if (value === '') {
+    return ' ';
   }
 
   return value;
@@ -54,24 +54,22 @@ const getStyledValue = (value, depth) => {
 export const stylish = (data, depth = 1) => {
   const result = data.reduce((acc, val) => {
     const sign = mapper[val.status];
-    const spaces = " ".repeat(depth * 4 - sign.length);
+    const spaces = ' '.repeat(depth * 4 - sign.length);
 
-    const getStyledRow = (value, sign) =>
-      `\n${spaces}${sign}${val.key}:${value === "" ? "" : " "}${getStyledValue(
-        value,
-        depth
-      )}`;
+    const getStyledRow = (value, currentSign) => `\n${spaces}${currentSign}${val.key}:${
+      value === '' ? '' : ' '
+    }${getStyledValue(value, depth, stylish)}`;
 
     const styledRow = getStyledRow(val.value, sign);
 
     if (val.oldValue !== undefined) {
-      return acc + getStyledRow(val.oldValue, mapper["removed"]) + styledRow;
+      return acc + getStyledRow(val.oldValue, mapper.removed) + styledRow;
     }
 
     return `${acc}${styledRow}`;
-  }, "");
+  }, '');
 
-  return `{${result}\n${" ".repeat((depth - 1) * 4)}}`;
+  return `{${result}\n${' '.repeat((depth - 1) * 4)}}`;
 };
 
 export default stylish;

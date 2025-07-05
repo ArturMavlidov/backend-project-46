@@ -1,10 +1,10 @@
-import { isObject } from "./helpers/index.js";
+import { isObject } from './helpers/index.js';
 
 export const getDiff = ({
   object1,
   object2,
   format,
-  propertyTree = "",
+  propertyTree = '',
   depth = 1,
 }) => {
   const object1Entries = Object.entries(object1);
@@ -13,7 +13,7 @@ export const getDiff = ({
   const object2NewValuesData = object2Keys
     .filter((key) => !Object.hasOwn(object1, key))
     .map((key) => ({
-      status: "added",
+      status: 'added',
       property: propertyTree ? `${propertyTree}.${key}` : key,
       key,
       value: object2[key],
@@ -31,7 +31,7 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          status: "equals",
+          status: 'equals',
           key,
           property,
           value: getDiff({
@@ -49,7 +49,7 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          status: "equals",
+          status: 'equals',
           property,
           key,
           value,
@@ -61,7 +61,7 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          status: "removed",
+          status: 'removed',
           property,
           key,
           value,
@@ -73,7 +73,7 @@ export const getDiff = ({
       return [
         ...acc,
         {
-          status: "updated",
+          status: 'updated',
           oldValue: value,
           value: valueInObject2,
           property,
