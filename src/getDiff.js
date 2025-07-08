@@ -23,7 +23,7 @@ export const getDiff = ({ object1, object2, format, depth = 1 }) => {
 
     if (isObject(value) && isObject(valueInObject2)) {
       return {
-        status: 'equals',
+        status: 'nested',
         key,
         value: getDiff({
           object1: value,
@@ -31,14 +31,6 @@ export const getDiff = ({ object1, object2, format, depth = 1 }) => {
           depth: depth + 1,
           format,
         }),
-      }
-    }
-
-    if (value === valueInObject2) {
-      return {
-        status: 'equals',
-        key,
-        value,
       }
     }
 
@@ -57,6 +49,12 @@ export const getDiff = ({ object1, object2, format, depth = 1 }) => {
         value: valueInObject2,
         key,
       }
+    }
+
+    return {
+      status: 'equals',
+      key,
+      value,
     }
   })
 

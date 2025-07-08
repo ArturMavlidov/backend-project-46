@@ -22,7 +22,7 @@ export const plain = (data) => {
         return `${acc}${iter(value, property)}`
       }
 
-      if (status === 'equals') return acc
+      if (status === 'equals' || status === 'nested') return acc
 
       const stringifiedValue = stringifyValue(value)
       const stringifiedOldValue = stringifyValue(oldValue)

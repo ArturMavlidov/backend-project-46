@@ -26,6 +26,7 @@ const stringify = ({
 
 const mapper = {
   equals: '  ',
+  nested: '  ',
   added: '+ ',
   updated: '+ ',
   removed: '- ',

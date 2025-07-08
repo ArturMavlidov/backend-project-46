@@ -1,5 +1,5 @@
-import { compareFiles } from '../src/gendiff'
 import { getFixtureContent, getFixturePath } from '../src/helpers'
+import { compareFiles } from '../src/index.js'
 
 describe('gendiff', () => {
   test('gendiff json files', () => {
